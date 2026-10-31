@@ -16,8 +16,7 @@ yaml_version: 1
 stage: fetch
 
 modules:
-  flopr:   {source_files: [flopr.sv]}
-  flopenr: {source_files: [flopenr.sv]}
-  adder:   {source_files: [adder.sv]}
-  mux2:    {source_files: [mux2.sv]}
-  imem:    {source_files: [imem.sv]}
+  if_stage:
+    source_files: [if_stage.sv]
+    ports: {pc_signed_offset: PC_so, pc_new: PC_new}
+    
