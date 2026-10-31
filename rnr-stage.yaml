@@ -12,11 +12,12 @@
 # 4. A module that instantiates other modules (id_stage, ex_stage, single_cycle_riscv) needs those
 #    modules listed here too.
 yaml_version: 1
+
 stage: fetch
 
 modules:
-  if_stage:
-    source_files: [if_stage.sv]
-    ports:
-      pc_signed_offset: PC_so
-      pc_new: PC_new
+  flopr:   {source_files: [flopr.sv]}
+  flopenr: {source_files: [flopenr.sv]}
+  adder:   {source_files: [adder.sv]}
+  mux2:    {source_files: [mux2.sv]}
+  imem:    {source_files: [imem.sv]}
