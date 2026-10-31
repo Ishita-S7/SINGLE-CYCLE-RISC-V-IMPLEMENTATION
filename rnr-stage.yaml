@@ -19,4 +19,3 @@ modules:
   if_stage:
     source_files: [if_stage.sv]
     ports: {pc_signed_offset: PC_so, pc_new: PC_new}
-    
