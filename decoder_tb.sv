@@ -5,7 +5,7 @@
 // 
 // Create Date: 29.10.2026 13:38:47
 // Design Name: 
-// Module Name: id_stage_tb
+// Module Name: decoder_tb
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module tb_id_stage;
+module decoder_tb;
 
     // DUT inputs
     logic [31:0] instruction;
@@ -34,7 +34,7 @@ module tb_id_stage;
     logic [11:4] imm11_5;
 
     // Instantiate DUT
-    id_stage dut (
+    decoder dut (
         .rs1(rs1),
         .rs2(rs2),
         .rd(rd),
