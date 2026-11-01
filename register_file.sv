@@ -29,8 +29,8 @@ output logic [31:0] rs1_data,rs2_data;
 logic[31:0] register [31:0];
 //read logic
 always_comb begin
-rs1_data=(rs1_sel==5'b0)?32'b0: register[rs1_data];
-rs2_data=(rs2_sel==5'b0)?32'b0: register[rs2_data];
+rs1_data = (rs1_sel == 5'b0) ? 32'b0 : register[rs1_sel];
+rs2_data = (rs2_sel == 5'b0) ? 32'b0 : register[rs2_sel];
 end
 //write logic
 always_ff@(posedge clk or posedge reset) begin
