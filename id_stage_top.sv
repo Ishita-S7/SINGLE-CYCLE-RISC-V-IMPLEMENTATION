@@ -53,7 +53,8 @@ module id_stage_top(
         .regwrite(regwrite),
         .aluop(aluop),
         .mux_inp(mux_inp),
-        .opcode(opcode)
+        .opcode(opcode),
+        .fn3(fn3)
     );
 
     // 3. register file (no write while stalled)
