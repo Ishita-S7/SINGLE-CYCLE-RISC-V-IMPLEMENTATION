@@ -1,27 +1,79 @@
 `timescale 1ns / 1ps
 
-module register_file(reset, clk, rs1_sel, rs2_sel, rd_sel, wb_data, reg_write, rs1_data, rs2_data);
-input  logic        reset, clk;
-input  logic [4:0]  rs1_sel, rs2_sel, rd_sel;
-input  logic [31:0] wb_data;
-input  logic        reg_write;
-output logic [31:0] rs1_data, rs2_data;
+module maincontrol(memtoreg, branch, memread, memwrite, alusrc, regwrite, aluop, mux_inp, opcode);
+output logic [1:0] memtoreg;
+output logic       branch;
+output logic       memread;
+output logic       memwrite;
+output logic       alusrc;
+output logic       regwrite;
+output logic [2:0] aluop;
+output logic       mux_inp;
+input  logic [6:0] opcode;
 
-logic [31:0] register [31:0];
-
-// read logic (x0 always reads as 0)
 always_comb begin
-    rs1_data = (rs1_sel == 5'b0) ? 32'b0 : register[rs1_sel];
-    rs2_data = (rs2_sel == 5'b0) ? 32'b0 : register[rs2_sel];
-end
+    // defaults: every output is always assigned, so no latch is inferred
+    memtoreg = 2'b00;
+    branch   = 1'b0;
+    memread  = 1'b0;
+    memwrite = 1'b0;
+    alusrc   = 1'b0;
+    regwrite = 1'b0;
+    aluop    = 3'b000;
+    mux_inp  = 1'b0;
 
-// write logic
-always_ff @(posedge clk or posedge reset) begin
-    if (reset) begin
-        register <= '{default: 0};
-    end else begin
-        if ((rd_sel != 0) && reg_write)
-            register[rd_sel] <= wb_data;
-    end
+    case (opcode)
+        7'b0110011: begin // R type
+            regwrite = 1'b1;
+        end
+        7'b0010011: begin // I type
+            alusrc   = 1'b1;
+            regwrite = 1'b1;
+            aluop    = 3'b001;
+        end
+        7'b0000011: begin // Load
+            memtoreg = 2'b01;
+            memread  = 1'b1;
+            alusrc   = 1'b1;
+            regwrite = 1'b1;
+            aluop    = 3'b010;
+        end
+        7'b0100011: begin // Store
+            memtoreg = 2'b11;
+            memwrite = 1'b1;
+            alusrc   = 1'b1;
+            aluop    = 3'b011;
+        end
+        7'b1100011: begin // Branch
+            branch   = 1'b1;
+            aluop    = 3'b100;
+        end
+        7'b1101111: begin // JAL
+            memtoreg = 2'b10;
+            alusrc   = 1'b1;
+            regwrite = 1'b1;
+            aluop    = 3'b110;
+        end
+        7'b1100111: begin // JALR
+            memtoreg = 2'b10;
+            alusrc   = 1'b1;
+            regwrite = 1'b1;
+            aluop    = 3'b001;
+            mux_inp  = 1'b1;
+        end
+        7'b0110111: begin // LUI
+            memtoreg = 2'b10;
+            alusrc   = 1'b1;
+            regwrite = 1'b1;
+            aluop    = 3'b110;
+        end
+        7'b0010111: begin // AUIPC
+            memtoreg = 2'b10;
+            alusrc   = 1'b1;
+            regwrite = 1'b1;
+            aluop    = 3'b000;
+        end
+        default: ; // keep the defaults
+    endcase
 end
 endmodule
