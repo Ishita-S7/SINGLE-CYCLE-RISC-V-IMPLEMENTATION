@@ -31,7 +31,7 @@ module decoder_tb;
     logic fn7_5;
     logic [11:0] imm;
     logic [19:0] imm_uj;
-    logic [11:4] imm11_5;
+    logic [6:0] imm11_5;
 
     // Instantiate DUT
     decoder dut (
