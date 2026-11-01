@@ -1,32 +1,33 @@
 `timescale 1ns / 1ps
 
-module maincontrol(memtoreg, branch, memread, memwrite, alusrc, regwrite, aluop, mux_inp, opcode);
+module maincontrol(opcode, fn3, memtoreg, branch, mux_inp, memread, memwrite, alusrc, regwrite, aluop);
+input  logic [6:0] opcode;
+input  logic [2:0] fn3;      // part of the spec interface, not used by the table
 output logic [1:0] memtoreg;
 output logic       branch;
+output logic       mux_inp;
 output logic       memread;
 output logic       memwrite;
 output logic       alusrc;
 output logic       regwrite;
 output logic [2:0] aluop;
-output logic       mux_inp;
-input  logic [6:0] opcode;
 
 always_comb begin
-    // defaults: every output is always assigned, so no latch is inferred
+    // defaults ("other" row of the table)
     memtoreg = 2'b00;
     branch   = 1'b0;
+    mux_inp  = 1'b0;
     memread  = 1'b0;
     memwrite = 1'b0;
     alusrc   = 1'b0;
     regwrite = 1'b0;
     aluop    = 3'b000;
-    mux_inp  = 1'b0;
 
     case (opcode)
-        7'b0110011: begin // R type
+        7'b0110011: begin // R-type
             regwrite = 1'b1;
         end
-        7'b0010011: begin // I type
+        7'b0010011: begin // I-type ALU
             alusrc   = 1'b1;
             regwrite = 1'b1;
             aluop    = 3'b001;
@@ -56,10 +57,10 @@ always_comb begin
         end
         7'b1100111: begin // JALR
             memtoreg = 2'b10;
+            mux_inp  = 1'b1;
             alusrc   = 1'b1;
             regwrite = 1'b1;
             aluop    = 3'b001;
-            mux_inp  = 1'b1;
         end
         7'b0110111: begin // LUI
             memtoreg = 2'b10;
@@ -73,7 +74,7 @@ always_comb begin
             regwrite = 1'b1;
             aluop    = 3'b000;
         end
-        default: ; // keep the defaults
+        default: ;
     endcase
 end
 endmodule
