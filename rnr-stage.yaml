@@ -24,6 +24,7 @@ modules:
   main_control:
     source_files: [maincontrol.sv]
     top_module: maincontrol
+    ports: {reg_write: regwrite}
   register_file:
     source_files: [register_file.sv]
   imm_generator:
