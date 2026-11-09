@@ -45,9 +45,6 @@ modules:
             mem_write: memwrite, mem_read: memread, alu_src: alusrc,
             alu_op: aluop}
 
-  mux:
-    source_files: [mux.sv]
-
   # EXECUTE STAGE
   alu_control:
     source_files: [alu_control.sv]
