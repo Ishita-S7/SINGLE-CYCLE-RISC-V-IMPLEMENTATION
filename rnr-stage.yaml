@@ -11,26 +11,59 @@
 #    See the assignment handout for an example.
 # 4. A module that instantiates other modules (id_stage, ex_stage, single_cycle_riscv) needs those
 #    modules listed here too.
+
 yaml_version: 1
 
-stage: decode
+stage: integration
 
 modules:
+
+  # FETCH STAGE
   if_stage:
     source_files: [if_stage.sv]
     ports: {pc_signed_offset: PC_so, pc_new: PC_new}
+
+  # DECODE STAGE
   decoder:
     source_files: [decoder.sv]
+
   main_control:
     source_files: [maincontrol.sv]
     top_module: maincontrol
     ports: {reg_write: regwrite}
+
   register_file:
     source_files: [register_file.sv]
+
   imm_generator:
     source_files: [imm_generator.sv]
+
   id_stage:
     source_files: [id_stage_top.sv]
     top_module: id_stage_top
     ports: {imm_out: imm_output, opcode_out_d: opcode, fn3_out_d: fn3,
-            mem_write: memwrite, mem_read: memread, alu_src: alusrc}
+            mem_write: memwrite, mem_read: memread, alu_src: alusrc,
+            alu_op: aluop}
+
+  mux:
+    source_files: [mux.sv]
+
+  # EXECUTE STAGE
+  alu_control:
+    source_files: [alu_control.sv]
+
+  alu:
+    source_files: [alu.sv]
+    ports: {rs1_data: operand_a, rs2_data: operand_b,
+            alu_control: control_out, alu_out: alu_result}
+
+  ex_stage:
+    source_files: [ex_stage.sv]
+
+  # WRITEBACK STAGE
+  wb_stage:
+    source_files: [wb_stage.sv]
+
+  # INTEGRATION STAGE
+  single_cycle_riscv:
+    source_files: [single_cycle_riscv.sv]
