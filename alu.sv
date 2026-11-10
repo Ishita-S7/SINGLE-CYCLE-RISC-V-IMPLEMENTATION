@@ -1,35 +1,19 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 05.11.2026 13:37:44
-// Design Name: 
-// Module Name: alu
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
-module alu(
-    input logic [31:0] operand_a,
-    input logic [31:0] operand_b,
+`timescale 1ns / 1ps
+
+module alu #(
+    parameter int DATA_WIDTH = 32
+)(
+    input logic [DATA_WIDTH-1:0] operand_a,
+    input logic [DATA_WIDTH-1:0] operand_b,
     input logic [4:0] control_out,
-    output logic [31:0] alu_result,
+    output logic [DATA_WIDTH-1:0] alu_result,
     output logic zero
 );
 
 always_comb begin
 
-    alu_result = 32'b0;
+    alu_result = '0;
     zero = 1'b0;
 
     case(control_out)
@@ -76,12 +60,14 @@ always_comb begin
 
         // SLT (Signed)
         5'b01000: begin
-            alu_result = ($signed(operand_a) < $signed(operand_b)) ? 32'd1 : 32'd0;
+            alu_result = ($signed(operand_a) < $signed(operand_b)) ?
+                         {{(DATA_WIDTH-1){1'b0}}, 1'b1} : '0;
         end
 
         // SLTU (Unsigned)
         5'b01001: begin
-            alu_result = (operand_a < operand_b) ? 32'd1 : 32'd0;
+            alu_result = (operand_a < operand_b) ?
+                         {{(DATA_WIDTH-1){1'b0}}, 1'b1} : '0;
         end
 
         // BEQ
@@ -115,7 +101,7 @@ always_comb begin
         end
 
         default: begin
-            alu_result = 32'b0;
+            alu_result = '0;
             zero = 1'b0;
         end
 
@@ -124,4 +110,3 @@ always_comb begin
 end
 
 endmodule
-
